@@ -1,67 +1,29 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, MapPin, Calendar, Building2, Users, Download, Eye, Grid3x3, Maximize2 } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Building2, Download, Eye, Grid3x3, Maximize2 } from 'lucide-react';
+import { useProjects } from '../contexts/ProjectContext';
+import UnityViewer from '../components/unity/UnityViewer';
 
 const ProjectDetail = () => {
   const { id } = useParams();
+  const { getProjectById } = useProjects();
+  const project = getProjectById(id);
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedImage, setSelectedImage] = useState(0);
 
-  // Mock data - Gerçek projede API'den gelecek
-  const project = {
-    id: 1,
-    title: 'Modern Rezidans Çankaya',
-    category: 'Konut',
-    location: 'Çankaya, Ankara',
-    date: '2024',
-    area: '15.000 m²',
-    status: 'Tamamlandı',
-    client: 'Özel Müşteri',
-    duration: '18 Ay',
-    description: 'Modern mimari anlayışla tasarlanmış, yüksek kalite standartlarında lüks rezidans projesi. Çevre dostu malzemeler kullanılarak inşa edilmiş, enerji verimliliği yüksek bir yapı.',
-    images: [
-      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200',
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200',
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200',
-    ],
-    features: [
-      'Akıllı Ev Sistemleri',
-      'Merkezi Klima',
-      'Kapalı Otopark',
-      'Sosyal Tesisler',
-      'Güvenlik Kameraları',
-      'Yeşil Alan Düzenlemesi'
-    ],
-    specifications: {
-      'Toplam Alan': '15.000 m²',
-      'Daire Sayısı': '120 Adet',
-      'Kat Sayısı': '12 Kat',
-      'Asansör': '4 Adet',
-      'Otopark': '150 Araç Kapasiteli',
-    },
-    floorPlans: [
-      {
-        id: 1,
-        title: '2+1 Daire Planı',
-        area: '95 m²',
-        image: 'https://images.unsplash.com/photo-1503174971373-b1f69850bded?w=800',
-      },
-      {
-        id: 2,
-        title: '3+1 Daire Planı',
-        area: '135 m²',
-        image: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800',
-      },
-      {
-        id: 3,
-        title: '4+1 Daire Planı',
-        area: '185 m²',
-        image: 'https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=800',
-      },
-    ],
-    unityBuildUrl: '/unity-builds/project-1/index.html' // Unity build path
-  };
+  if (!project) {
+    return (
+      <div className="min-h-screen pt-20 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Proje Bulunamadı</h2>
+          <p className="text-gray-600 mb-4">Aradığınız proje mevcut değil.</p>
+          <Link to="/projects" className="text-primary-600 hover:text-primary-700">
+            Projelere Dön
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const tabs = [
     { id: 'overview', name: 'Genel Bakış', icon: Eye },
@@ -237,14 +199,33 @@ const ProjectDetail = () => {
 
         {/* 3D View Tab */}
         {activeTab === '3dview' && (
-          <div className="bg-white rounded-2xl p-8 shadow-lg">
-            <h2 className="font-display font-bold text-2xl mb-6">3D Sanal Tur</h2>
-            <div className="bg-gray-100 rounded-lg p-12 text-center">
-              <Building2 size={64} className="mx-auto text-gray-400 mb-4" />
-              <p className="text-gray-600 mb-4">Unity 3D viewer burada yüklenecek</p>
-              <div className="bg-gray-200 h-96 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">Unity WebGL build entegrasyonu gelecek</p>
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl p-8 shadow-lg">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="font-display font-bold text-2xl">3D Sanal Tur</h2>
+                  <p className="text-gray-600 mt-2">Projeyi 360° olarak inceleyin</p>
+                </div>
               </div>
+              
+              <UnityViewer 
+                buildFolder={project.unityBuildUrl || "/unity-builds/project-1"}
+                width="100%"
+                height="700px"
+              />
+            </div>
+
+            <div className="bg-blue-50 rounded-xl p-6">
+              <h3 className="font-semibold text-lg mb-2 flex items-center">
+                <Building2 className="mr-2 text-primary-600" size={24} />
+                Unity Build Nasıl Eklenir?
+              </h3>
+              <ol className="list-decimal list-inside space-y-2 text-gray-700">
+                <li>Unity'de projenizi WebGL olarak build alın</li>
+                <li>Build klasörünü <code className="bg-white px-2 py-1 rounded">public/unity-builds/project-1/</code> altına kopyalayın</li>
+                <li>Build klasöründe şu dosyalar olmalı: Build.loader.js, Build.data, Build.framework.js, Build.wasm</li>
+                <li>Sayfayı yenileyin</li>
+              </ol>
             </div>
           </div>
         )}

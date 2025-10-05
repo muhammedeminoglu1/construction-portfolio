@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, MapPin, Calendar, Building2 } from 'lucide-react';
+import { useProjects } from '../contexts/ProjectContext';
 
 const Projects = () => {
+  const { projects, loading } = useProjects();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -11,75 +13,6 @@ const Projects = () => {
     { id: 'konut', name: 'Konut' },
     { id: 'ticari', name: 'Ticari' },
     { id: 'endustriyel', name: 'Endüstriyel' },
-  ];
-
-  const projects = [
-    {
-      id: 1,
-      title: 'Modern Rezidans Çankaya',
-      category: 'konut',
-      location: 'Çankaya, Ankara',
-      date: '2024',
-      area: '15.000 m²',
-      status: 'Tamamlandı',
-      image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
-      description: 'Modern mimari anlayışla tasarlanmış lüks rezidans projesi'
-    },
-    {
-      id: 2,
-      title: 'İş Merkezi Kızılay',
-      category: 'ticari',
-      location: 'Kızılay, Ankara',
-      date: '2024',
-      area: '25.000 m²',
-      status: 'Devam Ediyor',
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800',
-      description: 'A+ ofis standartlarında iş merkezi'
-    },
-    {
-      id: 3,
-      title: 'Lüks Villa Projesi',
-      category: 'konut',
-      location: 'Beştepe, Ankara',
-      date: '2023',
-      area: '2.500 m²',
-      status: 'Tamamlandı',
-      image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800',
-      description: 'Özel tasarım müstakil villa projesi'
-    },
-    {
-      id: 4,
-      title: 'Endüstriyel Tesis',
-      category: 'endustriyel',
-      location: 'OSB, Ankara',
-      date: '2024',
-      area: '50.000 m²',
-      status: 'Devam Ediyor',
-      image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800',
-      description: 'Modern üretim tesisi projesi'
-    },
-    {
-      id: 5,
-      title: 'AVM Projesi',
-      category: 'ticari',
-      location: 'Eryaman, Ankara',
-      date: '2023',
-      area: '35.000 m²',
-      status: 'Tamamlandı',
-      image: 'https://images.unsplash.com/photo-1519642918688-7e43b19245d8?w=800',
-      description: 'Bölgesel alışveriş merkezi projesi'
-    },
-    {
-      id: 6,
-      title: 'Konut Kompleksi',
-      category: 'konut',
-      location: 'Batıkent, Ankara',
-      date: '2024',
-      area: '45.000 m²',
-      status: 'Planlama',
-      image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
-      description: '500 konutlu modern yaşam kompleksi'
-    },
   ];
 
   const filteredProjects = projects.filter(project => {
@@ -97,6 +30,17 @@ const Projects = () => {
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-20 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
@@ -160,7 +104,7 @@ const Projects = () => {
               {/* Image */}
               <div className="relative h-64 overflow-hidden">
                 <img
-                  src={project.image}
+                  src={project.images[0]}
                   alt={project.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
