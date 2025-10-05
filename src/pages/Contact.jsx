@@ -92,7 +92,7 @@ const Contact = () => {
             {/* Map */}
             <div className="mt-8 rounded-xl overflow-hidden h-64">
               <iframe
-                src={contactPage.mapUrl}
+                src={'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3060.2827629134447!2d32.85439931537635!3d39.92077979339535!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14d347d520732db1%3A0x9e6e186b2b6c1e0e!2zw4dhbmtheWEsIEFua2FyYQ!5e0!3m2!1str!2str!4v1234567890123'}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
